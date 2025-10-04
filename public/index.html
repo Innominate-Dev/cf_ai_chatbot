@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    #chat-log { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px; }
+    form { display: flex; }
+    input[type="text"] { flex-grow: 1; padding: 8px; }
+    button { padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>AI Chat with Durable Objects</h1>
+  <div id="chat-log"></div>
+  <form id="chat-form">
+    <input type="text" id="prompt-input" placeholder="Type your message..." required>
+    <button type="submit">Send</button>
+  </form>
+  <script>
+    const chatForm = document.getElementById('chat-form');
+    const promptInput = document.getElementById('prompt-input');
+    const chatLog = document.getElementById('chat-log');
+    // Important: The chat API path is `/chat`
+    const chatEndpoint = window.location.origin + '/chat';
+
+    async function sendMessage(event) {
+      event.preventDefault();
+      const prompt = promptInput.value;
+      if (!prompt) return;
+
+      addMessage('You', prompt);
+      promptInput.value = '';
+
+      try {
+        const response = await fetch(chatEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: prompt })
+        });
+        const data = await response.json();
+        addMessage('AI', data.response);
+      } catch (error) {
+        console.error('Error:', error);
+        addMessage('AI', 'Sorry, an error occurred.');
+      }
+    }
+
+    function addMessage(sender, message) {
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      chatLog.appendChild(p);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', sendMessage);
+  </script>
+</body>
+</html>

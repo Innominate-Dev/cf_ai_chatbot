@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cf-ai-chatbot",
+  "main": "src/index.js",
+  "compatibility_date": "2025-10-03", // Use the current date or a recent one
+
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHAT_OBJECT",
+        "class_name": "ChatObject"
+      }
+    ]
+  },
+
+  "ai": {
+    "binding": "AI"
+  },
+
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["ChatObject"]
+    }
+  ],
+    "assets": {
+    "directory": "./public"
+  }
+}
